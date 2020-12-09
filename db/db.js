@@ -17,7 +17,22 @@ class DB {
         return this.connection.query("SELECT * FROM role")
     }
 
+    createDepartment(name){
+        return this.connection.query("INSERT INTO department SET ?", {
+            name: name
+        })
+    }
+
+    createRole(title, salary, department_id){
+        return this.connection.query("INSERT INTO role SET ?", {
+            title: title,
+            salary: salary,
+            department_id: department_id
+        })
+    }
     
 
 
 }
+
+module.exports = new DB(connection)

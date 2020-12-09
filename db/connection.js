@@ -1,13 +1,13 @@
 const mysql = require("mysql");
-const inquirer = require("inquirer");
-const util = 
+const util = require("util");
+require("dotenv").config();
 
 const connection = mysql.createConnection({
-  host: "localhost",
+  host: process.env.DB_HOST,
   port: 3306,
-  user: "root",
-  password: "12341234",
-  database: "employeetracker_DB"
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME
 });
 
 connection.connect(function(err) {
@@ -16,7 +16,7 @@ connection.connect(function(err) {
   });
 
 
-  //  make a promise
+  connection.query = util.promisify(connection.query);
 
   
   module.exports = connection
