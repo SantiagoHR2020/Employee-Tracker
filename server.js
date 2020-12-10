@@ -1,5 +1,4 @@
 const inquirer = require("inquirer");
-const { createRole } = require("./db/db.js");
 const DB = require("./db/db.js");
 require("console.table");
 
@@ -15,6 +14,7 @@ function questions() {
         "View employees",
         "Create Department",
         "Create Role",
+        "Create Employee",
         "Exit",
       ],
     })
@@ -38,6 +38,10 @@ function questions() {
 
         case "Create Role":
           createRole();
+          break;
+
+        case "Create Employee":
+            createEmployee();
           break;
 
         case "Exit":
@@ -91,38 +95,88 @@ function createDepartment() {
     });
 }
 
-// async function createRole() {
-//   const departments = await DB.findAllDepartments();
-//   const departmentChoices = departments.map(({ department_id, name }) => ({
-//     name: name,
-//     value: department_id,
-//   }));
-//   inquirer
-//     .prompt([
-//       {
-//         type: "input",
-//         name: "title",
-//         message: "What is the role's title",
-//       },
-//       {
-//         type: "input",
-//         name: "salary",
-//         message: "What is the salary?",
-//       },
-//       {
-//         type: "list",
-//         name: "department_id",
-//         message: "which role is the department is assing to",
-//         choices: departmentChoices,
-//       },
-//     ])
-//     .then((answer) => {
-//       DB.createRole(answer.title, answer.salary, answer.department_id).then(
-//         (res) => {
-//           console.log(res);
-//           viewAllRoles();
-//         }
-//       );
-//     });
-// }
+async function createRole() {
+  const departments = await DB.findAllDepartments();
+  const departmentChoices = departments.map(({ id, name }) => ({
+    name: name,
+    value: id,
+  }));
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "title",
+        message: "What is the role's title",
+      },
+      {
+        type: "input",
+        name: "salary",
+        message: "What is the salary?",
+      },
+      {
+        type: "list",
+        name: "department_id",
+        message: "which department is the role part of",
+        choices: departmentChoices,
+      },
+    ])
+    .then((answer) => {
+      DB.createRole(answer.title, answer.salary, answer.department_id).then(
+        (res) => {
+          console.log(res);
+          viewAllRoles();
+        }
+      );
+    });
+}
+
+async function createEmployee() {
+  const roles = await DB.findAllRoles();
+  const roleChoices = roles.map(({ id, title }) => ({
+    name: title,
+    value: id,
+  }));
+  const employees = await DB.findAllEmployees();
+  const employeeChoices = employees.map(({ id, last_name }) => ({
+    name: last_name,
+    value: id,
+  }));
+
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "first_name",
+        message: "What is the employee's first name?",
+      },
+      {
+        type: "input",
+        name: "last_name",
+        message: "What is the employee's last name?",
+      },
+      {
+        type: "list",
+        name: "role_id",
+        message: "which role is assign to the employee",
+        choices: roleChoices,
+      },
+      {
+        type: "list",
+        name: "manager_id",
+        message: "who is the manager",
+        choices: employeeChoices,
+      },
+    ])
+    .then((answer) => {
+      DB.createEmplyee(
+        answer.first_name,
+        answer.last_name,
+        answer.role_id,
+        answer.manager_id
+      ).then((res) => {
+        console.log(res);
+        viewAllEmployees();
+      });
+    });
+}
 questions();
