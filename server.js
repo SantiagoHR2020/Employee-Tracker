@@ -15,6 +15,7 @@ function questions() {
         "Create Department",
         "Create Role",
         "Create Employee",
+        "Update Employee Role",
         "Exit",
       ],
     })
@@ -41,7 +42,11 @@ function questions() {
           break;
 
         case "Create Employee":
-            createEmployee();
+          createEmployee();
+          break;
+
+        case "Update Employee Role":
+          updateEmployeeRole();
           break;
 
         case "Exit":
@@ -137,10 +142,12 @@ async function createEmployee() {
     value: id,
   }));
   const employees = await DB.findAllEmployees();
-  const employeeChoices = employees.map(({ id, last_name }) => ({
-    name: last_name,
+  const employeeChoices = employees.map(({ id, first_name, last_name }) => ({
+    name: first_name + " " + last_name,
     value: id,
   }));
+
+employeeChoices.push({name:"NA", value: null})
 
   inquirer
     .prompt([
@@ -168,7 +175,7 @@ async function createEmployee() {
       },
     ])
     .then((answer) => {
-      DB.createEmplyee(
+      DB.createEmployee(
         answer.first_name,
         answer.last_name,
         answer.role_id,
@@ -179,4 +186,72 @@ async function createEmployee() {
       });
     });
 }
+
+async function updateEmployeeRole() {
+  const roles = await DB.findAllRoles();
+  const roleChoices = roles.map(({ id, title }) => ({
+    name: title,
+    value: id,
+  }));
+  const employees = await DB.findAllEmployees();
+  const employeeChoices = employees.map(({ id, first_name, last_name }) => ({
+    name: first_name + " " + last_name,
+    value: id,
+  }));
+
+  console.log(employeeChoices)
+
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "employee_id",
+        message: "which employee do you want to update role?",
+        choices: employeeChoices,
+      },
+      {
+        type: "list",
+        name: "role_id",
+        message: "which new role is assign to the employee",
+        choices: roleChoices,
+      },
+    ])
+    .then((answer) => {
+      DB.updateEmployeeRole(answer.role_id, answer.employee_id).then((res) => {
+        console.log(res);
+        viewAllEmployees();
+      });
+    });
+}
+
+// async function updateEmployeeManager() {
+//     const employees = await DB.findAllEmployees();
+//     const employeeChoices = employees.map(({ id, name }) => ({
+//       name: first_name + " " +last_name,
+//       value: id,
+//     }));
+//     inquirer
+//       .prompt([
+//         {
+//           type: "input",
+//           name: "title",
+//           message: "What is the role's title",
+//         },
+//          {
+//           type: "list",
+//           name: "department_id",
+//           message: "which department is the role part of",
+//           choices: emplyeeChoices,
+//         },
+//       ])
+//       .then((answer) => {
+//         DB.createRole(answer.title, answer.salary, answer.department_id).then(
+//           (res) => {
+//             console.log(res);
+//             viewAllRoles();
+//           }
+//         );
+//       });
+//   }
+
 questions();
