@@ -199,7 +199,7 @@ async function updateEmployeeRole() {
     value: id,
   }));
 
-  console.log(employeeChoices)
+  // console.log(employeeChoices)
 
   inquirer
     .prompt([

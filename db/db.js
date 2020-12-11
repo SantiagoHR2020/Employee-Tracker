@@ -52,7 +52,7 @@ class DB {
     }
 
     updateEmployeeRole(role_id, employee_id){
-        console.log(role_id, employee_id)
+        // console.log(role_id, employee_id)
         return this.connection.query("UPDATE employee SET ? WHERE ?", [{
             role_id: role_id
         },
