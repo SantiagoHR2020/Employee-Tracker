@@ -224,34 +224,6 @@ async function updateEmployeeRole() {
     });
 }
 
-// async function updateEmployeeManager() {
-//     const employees = await DB.findAllEmployees();
-//     const employeeChoices = employees.map(({ id, name }) => ({
-//       name: first_name + " " +last_name,
-//       value: id,
-//     }));
-//     inquirer
-//       .prompt([
-//         {
-//           type: "input",
-//           name: "title",
-//           message: "What is the role's title",
-//         },
-//          {
-//           type: "list",
-//           name: "department_id",
-//           message: "which department is the role part of",
-//           choices: emplyeeChoices,
-//         },
-//       ])
-//       .then((answer) => {
-//         DB.createRole(answer.title, answer.salary, answer.department_id).then(
-//           (res) => {
-//             console.log(res);
-//             viewAllRoles();
-//           }
-//         );
-//       });
-//   }
+
 
 questions();

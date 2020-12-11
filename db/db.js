@@ -11,18 +11,13 @@ class DB {
     }
 
     findAllEmployees(){
-        return this.connection.query("SELECT employee.id, first_name, last_name, title, name AS department_name, salary, manager_id FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on department_id = department.id")
+        return this.connection.query("SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department_name, role.salary, manager.first_name AS manager_first_name, manager.last_name AS manager_last_name FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id")
     }
+    
     findAllRoles(){
         return this.connection.query("SELECT role.id, role.title, role.salary, role.department_id, department.name  FROM role LEFT JOIN department on department_id = department.id")
     }
 
-    findAllEmployeesByRole(){
-        return this.connection.query("SELECT first_name, last_name, title, name AS department_name, salary FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on department_id = department.id WHERE ?",
-        {
-            role_id: role_id,
-        })
-    }
 
     createDepartment(name){
         return this.connection.query("INSERT INTO department SET ?", {
